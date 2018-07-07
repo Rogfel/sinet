@@ -3,7 +3,6 @@
 name: Rogfel Thompson Martinez
 date: 04/07/2018
 '''
-import math
 import copy
 
 from IPartitionGenerator import IPartitionGenerator
@@ -20,17 +19,13 @@ class PartitionGenerator(IPartitionGenerator):
             for i in xrange(0, n):
                 self.__array_cardi.append(i)
             self.__partition_structures(1, 1, n)
-            for index in self.__list_structures[:1]:
+            for index in self.__list_structures[1:2]:
                 index_len, _ = self.__index_length(
                     index[0])
-                fac = self.__num_comb(n, index_len)
-                self.__do_combination(
-                    len(index[0]),
-                    0,
-                    index[0],
-                    self.__array_cardi,
-                    0,
-                    fac)
+                self.__list_comb = []
+                self.__do_combination(index_len, 0, n, [])
+                self.__do_struct_combination(
+                    index[0], self.__list_comb, self.__array_cardi)
             if includeTrivial:
                 self.__list_partitions.append([self.__array_cardi])
                 self.__list_partitions.insert(0, [None])
@@ -91,45 +86,34 @@ class PartitionGenerator(IPartitionGenerator):
             for i in xrange(0, cardinality):
                 values_cardi.append(str(i))
 
-    def __num_comb(self, cardinality, index_len):
-        return math.factorial(cardinality) / (math.factorial(index_len)
-                                              * math.factorial(cardinality - index_len))
+    def __do_struct_combination(self, structure, list_comb, array_cardi):
+        for comb in list_comb:
+            index_id = 0
+            temp_array = array_cardi[:]
+            for x in xrange(0, len(structure)):
+                for y in xrange(0, len(structure[x])):
+                    structure[x][y] = copy.deepcopy(comb[index_id])
+                    print(structure)
+                    temp_array.remove(structure[x][y])
+                    index_id += 1
+            self.__list_partitions.append(
+                (copy.deepcopy(structure), temp_array))
 
-    def __do_combination(
-            self,
-            level,
-            start_x,
-            index,
-            index_values,
-            index_id,
-            fac):
-
-        if level > 1:
-            for _ in xrange(0, fac):
-                for x in xrange(start_x, len(index)):
-                    for y in xrange(0, len(index[x])):
-                        index[x][y] = index_values[index_id]
-                        self.__do_combination(
-                            level - 1,
-                            start_x + 1,
-                            index,
-                            index_values,
-                            index_id + 1,
-                            fac)
+    def __do_combination(self, num_indi, start, cardinality, comb_indexs):
+        if num_indi > 1:
+            for val in xrange(start, cardinality - 1):
+                combination_indexs = comb_indexs[:]
+                combination_indexs.append(val)
+                self.__do_combination(
+                    num_indi - 1,
+                    val + 1,
+                    cardinality,
+                    combination_indexs)
         else:
-            for _ in xrange(0, fac):
-                for x in xrange(start_x, len(index)):
-                    for y in xrange(0, len(index[x])):
-                        index[x][y] = index_values[index_id]
-                index_id += 1
-                if index_id > len(index_values):
-                    index_id = 0
-                temp_array = index_values[:]
-                for x in xrange(0, len(index)):
-                    for y in xrange(0, len(index[x])):
-                        temp_array.remove(index[x][y])
-                self.__list_partitions.append(
-                    (copy.deepcopy(index), temp_array))
+            for val in xrange(start, cardinality):
+                combination_indexs = comb_indexs[:]
+                combination_indexs.append(val)
+                self.__list_comb.append(copy.deepcopy(combination_indexs))
 
     def __partition_structures(self, start_x, start_y, cardinality):
         x = start_x
