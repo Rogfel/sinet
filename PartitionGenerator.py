@@ -10,21 +10,31 @@ from IPartitionGenerator import IPartitionGenerator
 class PartitionGenerator(IPartitionGenerator):
 
     def __init__(self, n, includeTrivial=False):
-        IPartitionGenerator.__init__(self, n, includeTrivial)
-        self.__list_partitions = []
-        self.__list_structures = []
-        self.__array_cardi = []
-        for i in xrange(0, n):
-            self.__array_cardi.append(i)
-        self.__partition_structures(1, 1, n)
-        # for index in self.__list_structures:
-        #     self.__do_combination(
-        #         len(index['index']), 0, index['index'], self.__array_cardi, 0)
-        for x in xrange(0, n):
-	        self.__do_combination(
-	                len(self.__list_structures[0]['index']), x, self.__list_structures[0]['index'], self.__array_cardi, 0)
-        print(self.__list_structures[0])
-        print(self.__list_partitions)
+        if n > 0:
+            IPartitionGenerator.__init__(self, n, includeTrivial)
+            self.__list_partitions = []
+            self.__list_structures = []
+            self.__array_cardi = []
+            for i in xrange(0, n):
+                self.__array_cardi.append(i)
+            self.__partition_structures(1, 1, n)
+            # for index in self.__list_structures:
+            #     self.__do_combination(
+            # len(index['index']), 0, index['index'], self.__array_cardi, 0)
+            for x in xrange(0, n):
+                self.__do_combination(
+                    len(
+                        self.__list_structures[0]['index']),
+                    x,
+                    self.__list_structures[0]['index'],
+                    self.__array_cardi,
+                    0)
+            print(self.__list_structures[0])
+            print(self.__list_partitions)
+            # if includeTrivial:
+            # 	self.__list_partitions.append()
+        else:
+            print('O valor de n tem que ser maior que 0')
 
     def depleted(self):
         """
@@ -50,6 +60,8 @@ class PartitionGenerator(IPartitionGenerator):
                 prefix: the first item to print in row
                 suffix: the last item to print in row
         """
+        prefix = str(prefix)
+        suffix = str(suffix)
         str_row = prefix + self.__list_partitions[0] + suffix
         print(str_row)
 
@@ -88,9 +100,8 @@ class PartitionGenerator(IPartitionGenerator):
             temp_array = index_values[:]
             for x in xrange(0, len(index)):
                 for y in xrange(0, len(index[x])):
-					temp_array.remove(index[x][y])
-            self.__list_partitions.append(
-                {'index': index, 'other': temp_array})
+                    temp_array.remove(index[x][y])
+            self.__list_partitions.append((index, temp_array))
 
     def __partition_structures(self, start_x, start_y, cardinality):
         x = start_x
