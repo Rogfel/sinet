@@ -24,8 +24,8 @@ class PartitionGenerator(IPartitionGenerator):
                 index_len, _ = self.__index_length(
                     index[0])
                 self.__list_comb = []
-                self.__do_combination(index_len, 0, n, []) 
-                self.__list_part = []               
+                self.__do_combination(index_len, 0, n, [])
+                self.__list_part = []
                 self.__do_struct_combination(
                     index[0], self.__list_comb, self.__array_cardi)
                 self.__list_partitions += self.__list_part
@@ -84,10 +84,17 @@ class PartitionGenerator(IPartitionGenerator):
         return total, max_len
 
     def __reduction(self):
+        flag = False
         for row in self.__list_part:
-        	for i, rowb in enumerate(self.__list_part):        		
-        		if row[0][0] == rowb[1]:
-					del self.__list_part[i]
+            for i, rowb in enumerate(self.__list_part):
+                if row[0][0] == rowb[1]:
+                    del self.__list_part[i]
+
+		for i, rowb in enumerate(self.__list_part):
+			if len(rowb[1]) == 1 and flag:
+				del self.__list_part[i]
+            if len(rowb[1]) == 1:
+                flag = True
 
     def __do_struct_combination(self, structure, list_comb, array_cardi):
         for comb in list_comb:
@@ -116,7 +123,7 @@ class PartitionGenerator(IPartitionGenerator):
             for val in xrange(start, cardinality):
                 combination_indexs = comb_indexs[:]
                 combination_indexs.append(val)
-                self.__list_comb.append(copy.deepcopy(combination_indexs))          
+                self.__list_comb.append(copy.deepcopy(combination_indexs))
 
     def __partition_structures(self, start_x, start_y, cardinality):
         x = start_x
@@ -127,9 +134,9 @@ class PartitionGenerator(IPartitionGenerator):
             total, max_len = self.__index_length(index)
             other = [-1] * (cardinality - total)
             if len(other) >= max_len:
-            	if not ((index, other) in self.__list_structures): 
-	                self.__list_structures.append((index, other))
-	                self.__partition_structures(start_x + 1, y, cardinality)
+                if not ((index, other) in self.__list_structures):
+                    self.__list_structures.append((index, other))
+                    self.__partition_structures(start_x + 1, y, cardinality)
             else:
                 flag = False
             y += 1
@@ -139,7 +146,7 @@ if __name__ == "__main__":
 
     print("Prints:")
 
-    part = PartitionGenerator(5)
+    part = PartitionGenerator(4)
 
     while not part.depleted():
         part.printForDebug("", "\n")
