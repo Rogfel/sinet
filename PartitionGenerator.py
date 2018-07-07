@@ -66,8 +66,11 @@ class PartitionGenerator(IPartitionGenerator):
         str_chain = ''
         for chain in self.__list_partitions[0]:
             if chain is None:
-                str_chain += {}
-            str_chain += chain
+                str_chain += '{}'
+            else:
+                str_chain += str(chain)
+        str_chain = str_chain.replace('[[', ' { ')
+        str_chain = str_chain.replace(']]', ' } ')
         str_chain = str_chain.replace('[', ' { ')
         str_chain = str_chain.replace(']', ' } ')
         str_row = prefix + str_chain + suffix
@@ -134,9 +137,9 @@ if __name__ == "__main__":
 
     part = PartitionGenerator(4)
 
-    # while not part.depleted():
-    #     part.printForDebug("", "\n")
-    #     part.next()
+    while not part.depleted():
+        part.printForDebug("", "\n")
+        part.next()
 
     # print("Prints:")
 
