@@ -31,8 +31,9 @@ class PartitionGenerator(IPartitionGenerator):
                     0)
             print(self.__list_structures[0])
             print(self.__list_partitions)
-            # if includeTrivial:
-            # 	self.__list_partitions.append()
+            if includeTrivial:
+                self.__list_partitions.append([self.__array_cardi])
+                self.__list_partitions.insert(0, [None])
         else:
             print('O valor de n tem que ser maior que 0')
 
@@ -62,7 +63,14 @@ class PartitionGenerator(IPartitionGenerator):
         """
         prefix = str(prefix)
         suffix = str(suffix)
-        str_row = prefix + self.__list_partitions[0] + suffix
+        str_chain = ''
+        for chain in self.__list_partitions[0]:
+            if chain is None:
+                str_chain += {}
+            str_chain += chain
+        str_chain = str_chain.replace('[', ' { ')
+        str_chain = str_chain.replace(']', ' } ')
+        str_row = prefix + str_chain + suffix
         print(str_row)
 
     def __index_length(self, index):
