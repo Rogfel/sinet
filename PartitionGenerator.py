@@ -4,6 +4,7 @@ name: Rogfel Thompson Martinez
 date: 04/07/2018
 '''
 import copy
+import math
 
 from IPartitionGenerator import IPartitionGenerator
 
@@ -19,13 +20,15 @@ class PartitionGenerator(IPartitionGenerator):
             for i in xrange(0, n):
                 self.__array_cardi.append(i)
             self.__partition_structures(1, 1, n)
-            for index in self.__list_structures[1:2]:
+            for index in self.__list_structures:
                 index_len, _ = self.__index_length(
                     index[0])
                 self.__list_comb = []
-                self.__do_combination(index_len, 0, n, [])
+                self.__do_combination(index_len, 0, n, []) 
+                self.__list_part = []               
                 self.__do_struct_combination(
                     index[0], self.__list_comb, self.__array_cardi)
+                self.__list_partitions += self.__list_part
             if includeTrivial:
                 self.__list_partitions.append([self.__array_cardi])
                 self.__list_partitions.insert(0, [None])
@@ -80,11 +83,11 @@ class PartitionGenerator(IPartitionGenerator):
                 max_len = len(index[i])
         return total, max_len
 
-    def __do_partitions(self, cardinality):
-        values_cardi = []
-        if cardinality > 1:
-            for i in xrange(0, cardinality):
-                values_cardi.append(str(i))
+    def __reduction(self):
+        for row in self.__list_part:
+        	for i, rowb in enumerate(self.__list_part):        		
+        		if row[0][0] == rowb[1]:
+					del self.__list_part[i]
 
     def __do_struct_combination(self, structure, list_comb, array_cardi):
         for comb in list_comb:
@@ -93,11 +96,11 @@ class PartitionGenerator(IPartitionGenerator):
             for x in xrange(0, len(structure)):
                 for y in xrange(0, len(structure[x])):
                     structure[x][y] = copy.deepcopy(comb[index_id])
-                    print(structure)
                     temp_array.remove(structure[x][y])
                     index_id += 1
-            self.__list_partitions.append(
+            self.__list_part.append(
                 (copy.deepcopy(structure), temp_array))
+            self.__reduction()
 
     def __do_combination(self, num_indi, start, cardinality, comb_indexs):
         if num_indi > 1:
@@ -113,7 +116,7 @@ class PartitionGenerator(IPartitionGenerator):
             for val in xrange(start, cardinality):
                 combination_indexs = comb_indexs[:]
                 combination_indexs.append(val)
-                self.__list_comb.append(copy.deepcopy(combination_indexs))
+                self.__list_comb.append(copy.deepcopy(combination_indexs))          
 
     def __partition_structures(self, start_x, start_y, cardinality):
         x = start_x
@@ -124,8 +127,9 @@ class PartitionGenerator(IPartitionGenerator):
             total, max_len = self.__index_length(index)
             other = [-1] * (cardinality - total)
             if len(other) >= max_len:
-                self.__list_structures.append((index, other))
-                self.__partition_structures(start_x + 1, y, cardinality)
+            	if not ((index, other) in self.__list_structures): 
+	                self.__list_structures.append((index, other))
+	                self.__partition_structures(start_x + 1, y, cardinality)
             else:
                 flag = False
             y += 1
@@ -135,7 +139,7 @@ if __name__ == "__main__":
 
     print("Prints:")
 
-    part = PartitionGenerator(4)
+    part = PartitionGenerator(5)
 
     while not part.depleted():
         part.printForDebug("", "\n")
