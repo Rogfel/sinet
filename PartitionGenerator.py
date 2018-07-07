@@ -4,6 +4,7 @@ name: Rogfel Thompson Martinez
 date: 04/07/2018
 '''
 import math
+import copy
 
 from IPartitionGenerator import IPartitionGenerator
 
@@ -19,19 +20,17 @@ class PartitionGenerator(IPartitionGenerator):
             for i in xrange(0, n):
                 self.__array_cardi.append(i)
             self.__partition_structures(1, 1, n)
-            # for index in self.__list_structures:
-            #     self.__do_combination(
-            # len(index['index']), 0, index['index'], self.__array_cardi, 0)
-            index_len, _ = self.__index_length(
-                self.__list_structures[0]['index'])
-            fac = self.__num_comb(n, index_len)
-            self.__do_combination(
-                len(self.__list_structures[0]['index']),
-                0,
-                self.__list_structures[0]['index'],
-                self.__array_cardi,
-                0,
-                fac)
+            for index in self.__list_structures[:1]:
+                index_len, _ = self.__index_length(
+                    index[0])
+                fac = self.__num_comb(n, index_len)
+                self.__do_combination(
+                    len(index[0]),
+                    0,
+                    index[0],
+                    self.__array_cardi,
+                    0,
+                    fac)
             if includeTrivial:
                 self.__list_partitions.append([self.__array_cardi])
                 self.__list_partitions.insert(0, [None])
@@ -109,26 +108,28 @@ class PartitionGenerator(IPartitionGenerator):
             for _ in xrange(0, fac):
                 for x in xrange(start_x, len(index)):
                     for y in xrange(0, len(index[x])):
-                    	index[x][y] = index_values[index_id + y + x]
+                        index[x][y] = index_values[index_id]
                         self.__do_combination(
                             level - 1,
                             start_x + 1,
                             index,
                             index_values,
-                            index_id + y + x + 1,
+                            index_id + 1,
                             fac)
         else:
             for _ in xrange(0, fac):
                 for x in xrange(start_x, len(index)):
                     for y in xrange(0, len(index[x])):
-                        index[x][y] = index_values[index_id + y + x]                      
+                        index[x][y] = index_values[index_id]
                 index_id += 1
+                if index_id > len(index_values):
+                    index_id = 0
                 temp_array = index_values[:]
                 for x in xrange(0, len(index)):
                     for y in xrange(0, len(index[x])):
                         temp_array.remove(index[x][y])
-                self.__list_partitions.append(tuple((index, temp_array)))
-                print(index)
+                self.__list_partitions.append(
+                    (copy.deepcopy(index), temp_array))
 
     def __partition_structures(self, start_x, start_y, cardinality):
         x = start_x
@@ -139,8 +140,7 @@ class PartitionGenerator(IPartitionGenerator):
             total, max_len = self.__index_length(index)
             other = [-1] * (cardinality - total)
             if len(other) >= max_len:
-                self.__list_structures.append(
-                    {'index': index, 'other': other})
+                self.__list_structures.append((index, other))
                 self.__partition_structures(start_x + 1, y, cardinality)
             else:
                 flag = False
