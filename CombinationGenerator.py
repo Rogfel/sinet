@@ -10,15 +10,16 @@ from ICombinationGenerator import ICombinationGenerator
 class CombinationGenerator(ICombinationGenerator):
 
     def __init__(self, n, k=-1, avoidAllZero=False, avoidAllOne=False):
-        if n > 0:
-            ICombinationGenerator.__init__(self, n, k)
-
-            self.__matrix = []
+        self.__matrix = []
+        if n >= 2:
+            n = int(n)
+            ICombinationGenerator.__init__(self, n, k)            
             row = [0] * n
             if avoidAllZero:
                 self.__matrix.append(row)
 
             if k > 0:
+                k = int(k)
                 self.__do_matrix(k, 0, n, row)
             else:
                 for i in xrange(1, n):
@@ -27,7 +28,7 @@ class CombinationGenerator(ICombinationGenerator):
             if avoidAllOne:
                 self.__matrix.append([1] * n)
         else:
-            print('O valor de n tem que ser maior que 0')
+            print('O valor de n tem que ser maior ou mesmo que 2')
 
     def at(self, pos):
         """
@@ -95,17 +96,25 @@ class CombinationGenerator(ICombinationGenerator):
 
 if __name__ == "__main__":
 
-    print("Prints:")
+    print("Prints: n = 1")
 
-    comb = CombinationGenerator(3)
+    comb = CombinationGenerator(1)
 
     while not comb.depleted():
         comb.printForDebug("", "\n")
         comb.next()
 
-    print("Prints:")
+    print("Prints: n = 2.5")
+    # para valores decimais se converte o número a entero
+    comb = CombinationGenerator(2.5)
 
-    comb = CombinationGenerator(5, 3)
+    while not comb.depleted():
+        comb.printForDebug("", "\n")
+        comb.next()
+
+    print("Prints: n = 5, k = 3.5")
+
+    comb = CombinationGenerator(5, 3.5)
 
     while not comb.depleted():
         comb.printForDebug("", "\n")
