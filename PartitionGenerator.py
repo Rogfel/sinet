@@ -4,7 +4,6 @@ name: Rogfel Thompson Martinez
 date: 04/07/2018
 '''
 import copy
-import math
 
 from IPartitionGenerator import IPartitionGenerator
 
@@ -12,9 +11,10 @@ from IPartitionGenerator import IPartitionGenerator
 class PartitionGenerator(IPartitionGenerator):
 
     def __init__(self, n, includeTrivial=False):
-        if n > 0:
+        self.__list_partitions = []
+        if n > 2:
+            n = int(n)
             IPartitionGenerator.__init__(self, n, includeTrivial)
-            self.__list_partitions = []
             self.__list_structures = []
             self.__array_cardi = []
             for i in xrange(0, n):
@@ -33,13 +33,13 @@ class PartitionGenerator(IPartitionGenerator):
                 self.__list_partitions.append([self.__array_cardi])
                 self.__list_partitions.insert(0, [None])
         else:
-            print('O valor de n tem que ser maior que 0')
+            print('O valor de n tem que ser maior ou mesmo que 2')
 
     def depleted(self):
         """
         return:
-                False: when the matrix isn't empty
-                True: when the matrix is empty
+                        False: when the matrix isn't empty
+                        True: when the matrix is empty
         """
         if len(self.__list_partitions) > 0:
             return False
@@ -56,8 +56,8 @@ class PartitionGenerator(IPartitionGenerator):
         """
         Print one row item
         attribute:
-                prefix: the first item to print in row
-                suffix: the last item to print in row
+                        prefix: the first item to print in row
+                        suffix: the last item to print in row
         """
         prefix = str(prefix)
         suffix = str(suffix)
@@ -90,9 +90,9 @@ class PartitionGenerator(IPartitionGenerator):
                 if row[0][0] == rowb[1]:
                     del self.__list_part[i]
 
-		for i, rowb in enumerate(self.__list_part):
-			if len(rowb[1]) == 1 and flag:
-				del self.__list_part[i]
+        for i, rowb in enumerate(self.__list_part):
+            if len(rowb[1]) == 1 and flag:
+                del self.__list_part[i]
             if len(rowb[1]) == 1:
                 flag = True
 
@@ -144,7 +144,23 @@ class PartitionGenerator(IPartitionGenerator):
 
 if __name__ == "__main__":
 
-    print("Prints:")
+    print("Prints: 1")
+
+    part = PartitionGenerator(1)
+
+    while not part.depleted():
+        part.printForDebug("", "\n")
+        part.next()
+
+    print("Prints: 2.5")
+
+    part = PartitionGenerator(2.5)
+    # para valores decimais se converte o número a entero
+    while not part.depleted():
+        part.printForDebug("", "\n")
+        part.next()
+
+    print("Prints: 4")
 
     part = PartitionGenerator(4)
 
@@ -152,12 +168,3 @@ if __name__ == "__main__":
         part.printForDebug("", "\n")
         part.next()
 
-    # print("Prints:")
-
-    # part = CombinationGenerator(4)
-
-    # while not part.depleted():
-    #     part.printForDebug("", "\n")
-    #     part.next()
-
-    # print("Prints:")
