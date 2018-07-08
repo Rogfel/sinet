@@ -114,13 +114,15 @@ class PartitionGenerator(IPartitionGenerator):
         for comb in list_comb:
             index_id = 0
             temp_array = array_cardi[:]
+            temp_structure = structure[:]
             for x in xrange(0, len(structure)):
+            	temp_structure[x] = structure[x][:]
                 for y in xrange(0, len(structure[x])):
-                    structure[x][y] = copy.deepcopy(comb[index_id])
-                    temp_array.remove(structure[x][y])
+                    temp_structure[x][y] = comb[index_id]
+                    temp_array.remove(temp_structure[x][y])
                     index_id += 1
             self.__list_part.append(
-                (copy.deepcopy(structure), temp_array))
+                (copy.deepcopy(temp_structure), temp_array))
             self.__reduction()
 
     def __do_combination(self, num_indi, start, cardinality, comb_indexs):
