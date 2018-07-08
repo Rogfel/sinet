@@ -75,6 +75,10 @@ class PartitionGenerator(IPartitionGenerator):
         print(str_row)
 
     def __index_length(self, index):
+        """
+                index are the positions before the last
+                index_length is the number of elements that the index has
+        """
         total = 0
         max_len = 0
         for i in xrange(0, len(index)):
@@ -84,6 +88,9 @@ class PartitionGenerator(IPartitionGenerator):
         return total, max_len
 
     def __reduction(self):
+        """
+        reduction of repeated combinations
+        """
         flag = False
         for row in self.__list_part:
             for i, rowb in enumerate(self.__list_part):
@@ -97,6 +104,13 @@ class PartitionGenerator(IPartitionGenerator):
                 flag = True
 
     def __do_struct_combination(self, structure, list_comb, array_cardi):
+        """
+                Put the combination list in the especific structure
+                attribute
+                        structure: define structure. Example {}{}{ , }
+                        list_comb: combination list for this structure
+                        array_cardi: number list of input cardinality
+        """
         for comb in list_comb:
             index_id = 0
             temp_array = array_cardi[:]
@@ -110,6 +124,15 @@ class PartitionGenerator(IPartitionGenerator):
             self.__reduction()
 
     def __do_combination(self, num_indi, start, cardinality, comb_indexs):
+        """
+                It make combinations for especific index length
+                This method is recursive
+                Attribute:
+                         num_indi: the index level. Exemplo {1} {,} level 1; {2}{1}{,} level 2
+                         start: start position  of cardinality list
+                         cardinality: cardinality value
+                         comb_indexs: combination values in construction
+        """
         if num_indi > 1:
             for val in xrange(start, cardinality - 1):
                 combination_indexs = comb_indexs[:]
@@ -126,6 +149,14 @@ class PartitionGenerator(IPartitionGenerator):
                 self.__list_comb.append(copy.deepcopy(combination_indexs))
 
     def __partition_structures(self, start_x, start_y, cardinality):
+        """
+                It make particions structure
+                This method is recursive
+                Attribute
+                        start_x: start values of amount of the index column
+                        start_y: start values of amount of the index column index deep column
+                        cardinality: cardinality value
+        """
         x = start_x
         flag = True
         y = start_y
@@ -144,7 +175,7 @@ class PartitionGenerator(IPartitionGenerator):
 
 if __name__ == "__main__":
 
-    print("Prints: 1")
+    print("Prints: n = 1")
 
     part = PartitionGenerator(1)
 
@@ -152,7 +183,7 @@ if __name__ == "__main__":
         part.printForDebug("", "\n")
         part.next()
 
-    print("Prints: 2.5")
+    print("Prints: n = 2.5")
 
     part = PartitionGenerator(2.5)
     # para valores decimais se converte o número a entero
@@ -160,11 +191,10 @@ if __name__ == "__main__":
         part.printForDebug("", "\n")
         part.next()
 
-    print("Prints: 4")
+    print("Prints: n = 4")
 
     part = PartitionGenerator(4)
 
     while not part.depleted():
         part.printForDebug("", "\n")
         part.next()
-
